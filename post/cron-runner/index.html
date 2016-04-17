@@ -1,0 +1,134 @@
+<!doctype html>
+
+
+
+ <html class="no-js" lang=""> 
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>cron runner</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="INDEX, FOLLOW">
+        <link rel="stylesheet" href="http://pgray.github.io//css/normalize.min.css">
+        <link rel="stylesheet" href="http://pgray.github.io//css/main.css">
+
+        <script src="http://pgray.github.io//js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    </head>
+    <body>
+        
+        <div class="header-container">
+            <header class="wrapper clearfix">
+               <a href="http://pgray.github.io/"> <h1 class="title">pgray</h1></a>
+            </header>
+        </div>
+
+        <div class="main-container">
+            <div class="main wrapper clearfix">
+
+  
+    <article>
+        <header> 
+            <h1><a href="http://pgray.github.io/post/cron-runner/">cron runner</a></h1>
+        </header>
+        
+
+<h2 id="why">Why?</h2>
+
+<p>Cron is awesome and its use is widespread. Sometimes though, one might hit minor hiccups in creating jobs because of environment variables, dependencies, or any other multitude of reasons. One could argue that complicated cron jobs should not be cron jobs at all, but it might not make sense for a business or sole developer to create a more sophisticated solution at the cost of taking time away from the project or product they are working on.
+Also, if the machine one picks just happens to be running <a href="https://coreos.com/">CoreOS</a> (or if one just feels like it), it might make more logical sense to configure an instance or machine with SystemD timers instead of trying to set up a traditional cron runner of sorts inside a container or via some other means.</p>
+
+<h2 id="config">Config</h2>
+
+<p>I will be running CoreOS and creating a timer unit and service unit with a cloud-config. The cloud-config  is the user_data one specifies for an <code>aws_instance</code> in a tool like <a href="https://terraform.io/">terraform</a>, or the input for the <a href="https://www.digitalocean.com/company/blog/automating-application-deployments-with-user-data/">User Data</a> textbox on Digital Ocean&rsquo;s Droplet creation interface. Cloud-configs can be used to configure VPSs (virtual private servers) and work across many cloud providers. AWS and DigitalOcean are the main services/providers I use. Most likely one&rsquo;s cloud/infrastructure provider has some way of providing a CoreOS instance a cloud-config, and if not there&rsquo;s no shortage of other providers.</p>
+
+<pre><code>#cloud-config
+coreos:
+  units:
+    - name: docker.service
+      enable: true
+    - name: job.timer
+      command: start
+      content: |
+        [Unit]
+        Description=A timer that starts the job service and runs it every Friday at 12 pm (noon)
+        Requires=docker.service
+
+        [Timer]
+        OnCalendar=Fri *-*-* 12:00:00
+    - name: job.service
+      content: |
+        [Unit]
+        Description=The job service, which just runs a container
+        Requires=docker.service
+
+        [Service]
+        TimeoutSec=0
+        Type=simple
+        ExecStartPre=/usr/bin/docker pull registry.example.com/job:latest
+        ExecStart=/usr/bin/docker run --rm registry.example.com/job:latest
+</code></pre>
+
+<h2 id="explanation">Explanation:</h2>
+
+<p>Above I&rsquo;ve created a cloud-config that:</p>
+
+<ul>
+<li>enables docker</li>
+<li>creates the job.timer unit file</li>
+<li>configures the job.timer to start</li>
+<li>creates the content of the job.timer with <a href="http://www.freedesktop.org/software/systemd/man/systemd.time.html"><code>Fri *-*-* 12:00:00</code></a> referring to every Friday at noon</li>
+<li>creates the job.service unit file, which:
+
+<ul>
+<li>requires <code>docker.service</code></li>
+<li>sets the timeout to infinity (e.g. never timeout)</li>
+<li>sets the type to simple (this is good for units that exit)</li>
+<li>pulls the docker image associated with the job every time the service starts</li>
+<li>starts the container with <code>--rm</code> which ensures the container will be cleaned up upon exit</li>
+</ul></li>
+</ul>
+
+<p>Some of these choices in the cloud-config, like the time the job executes and executing <code>docker run</code> with <code>--rm</code> are easily configurable options that change based upon situation, but others like <code>TimeoutSec=0</code> and <code>Requires=docker.service</code> are good choices when your service runs a container specifically because of the time it takes to download an image, and the explicit need of a docker daemon to do anything locally with docker.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I started writing this post because I wasn&rsquo;t sure if the timers worked exactly like cron jobs and only executed at the times that the <code>OnCalendar=</code> field in the timer unit that matched (e.g. on boot and at 12pm?), but from working on a small project and doing some troubleshooting at the beginning, it looks like most of that is handled by more involved fields specified in the <a href="http://www.freedesktop.org/software/systemd/man/systemd.timer.html">documentation</a>. I hope the description of all the pieces above prove helpful though to anyone that might stumble across it.</p>
+
+        </article>
+              <aside>
+                    <h3>Recent</h3>
+                    <ul>
+                        
+                        <li>        
+                            <a href="http://pgray.github.io/post/cron-runner/">cron runner</a>
+                        </li>
+                        
+                        <li>        
+                            <a href="http://pgray.github.io/post/servers/">servers</a>
+                        </li>
+                        
+                    </ul>
+                </aside>    
+
+
+           </div> 
+        </div> 
+       
+        <div class="footer-container">
+            <footer class="wrapper">
+                <a href="http://pgray.github.io/"><h3>pgray</h3></a>
+            <script type="text/javascript" src='http://adn.ebay.com/files/js/min/jquery-1.6.2-min.js'></script>
+
+            </footer>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="http:\/\/pgray.github.io\//js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="http://pgray.github.io//js/main.js"></script>
+
+</script>
+    </body>
+</html>
