@@ -6,102 +6,19 @@
     <description>Recent content on pgray</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 Apr 2016 16:59:40 -0400</lastBuildDate>
-    <atom:link href="https://pgray.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 28 May 2018 01:55:43 -0700</lastBuildDate>
+    
+	<atom:link href="https://pgray.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
     
     <item>
-      <title>cron runner</title>
-      <link>https://pgray.github.io/post/cron-runner/</link>
-      <pubDate>Sun, 17 Apr 2016 16:59:40 -0400</pubDate>
+      <title>Intro</title>
+      <link>https://pgray.github.io/post/intro/</link>
+      <pubDate>Mon, 28 May 2018 01:55:43 -0700</pubDate>
       
-      <guid>https://pgray.github.io/post/cron-runner/</guid>
-      <description>
-
-&lt;h2 id=&#34;why&#34;&gt;Why?&lt;/h2&gt;
-
-&lt;p&gt;Cron is awesome and its use is widespread. Sometimes though, one might hit minor hiccups in creating jobs because of environment variables, dependencies, or any other multitude of reasons. One could argue that complicated cron jobs should not be cron jobs at all, but it might not make sense for a business or sole developer to create a more sophisticated solution at the cost of taking time away from the project or product they are working on.
-Also, if the machine one picks just happens to be running &lt;a href=&#34;https://coreos.com/&#34;&gt;CoreOS&lt;/a&gt; (or if one just feels like it), it might make more logical sense to configure an instance or machine with SystemD timers instead of trying to set up a traditional cron runner of sorts inside a container or via some other means.&lt;/p&gt;
-
-&lt;h2 id=&#34;config&#34;&gt;Config&lt;/h2&gt;
-
-&lt;p&gt;I will be running CoreOS and creating a timer unit and service unit with a cloud-config. The cloud-config  is the user_data one specifies for an &lt;code&gt;aws_instance&lt;/code&gt; in a tool like &lt;a href=&#34;https://terraform.io/&#34;&gt;terraform&lt;/a&gt;, or the input for the &lt;a href=&#34;https://www.digitalocean.com/company/blog/automating-application-deployments-with-user-data/&#34;&gt;User Data&lt;/a&gt; textbox on Digital Ocean&amp;rsquo;s Droplet creation interface. Cloud-configs can be used to configure VPSs (virtual private servers) and work across many cloud providers. AWS and DigitalOcean are the main services/providers I use. Most likely one&amp;rsquo;s cloud/infrastructure provider has some way of providing a CoreOS instance a cloud-config, and if not there&amp;rsquo;s no shortage of other providers.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#cloud-config
-coreos:
-  units:
-    - name: docker.service
-      enable: true
-    - name: job.timer
-      command: start
-      content: |
-        [Unit]
-        Description=A timer that starts the job service and runs it every Friday at 12 pm (noon)
-        Requires=docker.service
-
-        [Timer]
-        OnCalendar=Fri *-*-* 12:00:00
-    - name: job.service
-      content: |
-        [Unit]
-        Description=The job service, which just runs a container
-        Requires=docker.service
-
-        [Service]
-        TimeoutSec=0
-        Type=simple
-        ExecStartPre=/usr/bin/docker pull registry.example.com/job:latest
-        ExecStart=/usr/bin/docker run --rm registry.example.com/job:latest
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;explanation&#34;&gt;Explanation:&lt;/h2&gt;
-
-&lt;p&gt;Above I&amp;rsquo;ve created a cloud-config that:&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;enables docker&lt;/li&gt;
-&lt;li&gt;creates the job.timer unit file&lt;/li&gt;
-&lt;li&gt;configures the job.timer to start&lt;/li&gt;
-&lt;li&gt;creates the content of the job.timer with &lt;a href=&#34;http://www.freedesktop.org/software/systemd/man/systemd.time.html&#34;&gt;&lt;code&gt;Fri *-*-* 12:00:00&lt;/code&gt;&lt;/a&gt; referring to every Friday at noon&lt;/li&gt;
-&lt;li&gt;creates the job.service unit file, which:
-
-&lt;ul&gt;
-&lt;li&gt;requires &lt;code&gt;docker.service&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;sets the timeout to infinity (e.g. never timeout)&lt;/li&gt;
-&lt;li&gt;sets the type to simple (this is good for units that exit)&lt;/li&gt;
-&lt;li&gt;pulls the docker image associated with the job every time the service starts&lt;/li&gt;
-&lt;li&gt;starts the container with &lt;code&gt;--rm&lt;/code&gt; which ensures the container will be cleaned up upon exit&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Some of these choices in the cloud-config, like the time the job executes and executing &lt;code&gt;docker run&lt;/code&gt; with &lt;code&gt;--rm&lt;/code&gt; are easily configurable options that change based upon situation, but others like &lt;code&gt;TimeoutSec=0&lt;/code&gt; and &lt;code&gt;Requires=docker.service&lt;/code&gt; are good choices when your service runs a container specifically because of the time it takes to download an image, and the explicit need of a docker daemon to do anything locally with docker.&lt;/p&gt;
-
-&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;I started writing this post because I wasn&amp;rsquo;t sure if the timers worked exactly like cron jobs and only executed at the times that the &lt;code&gt;OnCalendar=&lt;/code&gt; field in the timer unit that matched (e.g. on boot and at 12pm?), but from working on a small project and doing some troubleshooting at the beginning, it looks like most of that is handled by more involved fields specified in the &lt;a href=&#34;http://www.freedesktop.org/software/systemd/man/systemd.timer.html&#34;&gt;documentation&lt;/a&gt;. I hope the description of all the pieces above prove helpful though to anyone that might stumble across it.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>servers</title>
-      <link>https://pgray.github.io/post/servers/</link>
-      <pubDate>Sun, 17 Apr 2016 16:38:15 -0400</pubDate>
-      
-      <guid>https://pgray.github.io/post/servers/</guid>
-      <description>&lt;p&gt;There&amp;rsquo;s something nice about having a physical server. Whether it&amp;rsquo;s a raspberry pi, old pc, overly smart router, or some other device, having your own server to manage and a small set of services or apps to keep up make a hobby out of syst
-em administration and/or development that nicely creates a sense of responsibility and set of small problems to keep one on one&amp;rsquo;s toes.&lt;/p&gt;
-
-&lt;p&gt;Work with what you have&amp;hellip;&lt;/p&gt;
-
-&lt;p&gt;Or don&amp;rsquo;t and buy what you don&amp;rsquo;t need.&lt;/p&gt;
-
-&lt;p&gt;Play.&lt;/p&gt;
-
-&lt;p&gt;It&amp;rsquo;s all good.&lt;/p&gt;
-
-&lt;p&gt;Making some sort of hobby out of computers is one of the most rewarding things in a world that is consistently heading towards a digital future.&lt;/p&gt;
-
-&lt;p&gt;Make that digital future a little more human&amp;hellip;&lt;/p&gt;
-</description>
+      <guid>https://pgray.github.io/post/intro/</guid>
+      <description> Hello I&amp;rsquo;m Patrick Gray; pgray for most online purposes.
+I&amp;rsquo;m interested in:  Go Rust Kubernetes Decentralized System Architectures Automation Performance Optimization  </description>
     </item>
     
   </channel>

@@ -1,88 +1,154 @@
-<!doctype html>
-
-
-
- <html class="no-js" lang=""> 
+<!DOCTYPE html>
+<html lang="en-us">
     <head>
+         
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>pgray</title>
-        <meta name="description" content="">
-        <meta name="keywords" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="robots" content="INDEX, FOLLOW">
-        <link rel="stylesheet" href="https://pgray.github.io//css/normalize.min.css">
-        <link rel="stylesheet" href="https://pgray.github.io//css/main.css">
-
-        <script src="https://pgray.github.io//js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-    </head>
-    <body>
+        <title>pgray</title>
         
-        <div class="header-container">
-            <header class="wrapper clearfix">
-               <a href="https://pgray.github.io/"> <h1 class="title">pgray</h1></a>
-            </header>
-        </div>
+        <style>
 
-        <div class="main-container">
-            <div class="main wrapper clearfix">
+    html body {
+        font-family: 'Raleway', sans-serif;
+        background-color: white;
+    }
 
-              <aside>
-                    <h3>Recent</h3>
-                    <ul>
-                        
-                        <li>        
-                            <a href="https://pgray.github.io/post/cron-runner/">cron runner</a>
-                        </li>
-                        
-                        <li>        
-                            <a href="https://pgray.github.io/post/servers/">servers</a>
-                        </li>
-                        
-                    </ul>
-                </aside>   
+    :root {
+        --accent: red;
+        --border-width:  5px ;
+    }
+
+</style>
+
+
+<link rel="stylesheet" href="https://pgray.github.io/css/main.css">
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-dark.min.css"> 
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+ 
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/kotlin.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/scala.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/swift.min.js"></script> 
+
+    <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+<script>$(document).on('click', function() { $('.collapse').collapse('hide'); })</script>
+ <meta name="generator" content="Hugo 0.40.3" />
+        
+        <link href="https://pgray.github.io/index.xml" rel="alternate" type="application/rss+xml" title="pgray" />
+        <link href="https://pgray.github.io/index.xml" rel="feed" type="application/rss+xml" title="pgray" />
+        
+
+        
+    </head>
+
     
-    <article>
-        <header> 
-            <h1><a href="https://pgray.github.io/post/cron-runner/">cron runner</a></h1>
-        </header>
-        Why? Cron is awesome and its use is widespread. Sometimes though, one might hit minor hiccups in creating jobs because of environment variables, dependencies, or any other multitude of reasons. One could argue that complicated cron jobs should not be cron jobs at all, but it might not make sense for a business or sole developer to create a more sophisticated solution at the cost of taking time away from the project or product they are working on.
-    </article>
     
-    <article>
-        <header> 
-            <h1><a href="https://pgray.github.io/post/servers/">servers</a></h1>
-        </header>
-        There&rsquo;s something nice about having a physical server. Whether it&rsquo;s a raspberry pi, old pc, overly smart router, or some other device, having your own server to manage and a small set of services or apps to keep up make a hobby out of syst em administration and/or development that nicely creates a sense of responsibility and set of small problems to keep one on one&rsquo;s toes. Work with what you have&hellip; Or don&rsquo;t and buy what you don&rsquo;t need.
-    </article>
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
     
-   
 
-                     <div class="pager">
-                 <nav>
-                
-                
-                </nav>
-                 </div>
-                      
+    <body>
+         
+        <nav class="navbar navbar-default navbar-fixed-top">
+
+            <div class="container">
+
+                <div class="navbar-header">
+
+                    <a class="navbar-brand visible-xs" href="#">pgray</a>
+
+                    <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+
+                <div class="collapse navbar-collapse">
+
+                    
+                        <ul class="nav navbar-nav">
+                            
+                                <li><a href="/">Home</a></li>
+                            
+                                <li><a href="/post/">Posts</a></li>
+                            
+                        </ul>
+                    
+
+                    
+                        <ul class="nav navbar-nav navbar-right">
+                            
+                                <li class="navbar-icon"><a href="mailto:contact@pgray.xyz"><i class="fa fa-envelope-o"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://github.com/pgray/"><i class="fa fa-github"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://twitter.com/patgray1127/"><i class="fa fa-twitter"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://www.linkedin.com/in/patrick-gray-37b90b6b/"><i class="fa fa-linkedin"></i></a></li>
+                            
+                                <li class="navbar-icon"><a href="https://www.stackoverflow.com/users/5684076/pgray"><i class="fa fa-stack-overflow"></i></a></li>
+                            
+                        </ul>
+                    
+
+                </div>
+
+            </div>
+
+        </nav>
 
 
-           </div> 
-        </div> 
+<main>
+
+    <div class="intro">
+
+        
+
+        <h1>pgray</h1>
+
+        <h2>tired</h2>
+
+    </div>
+
+</main>
+
+        <footer>
+
+            <p class="copyright text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io">Hugo</a> and <a href="https://github.com/calintat/minimal">Minimal</a></p>
+
+        </footer>
        
-        <div class="footer-container">
-            <footer class="wrapper">
-                <a href="https://pgray.github.io/"><h3>pgray</h3></a>
-            <script type="text/javascript" src='http://adn.ebay.com/files/js/min/jquery-1.6.2-min.js'></script>
-
-            </footer>
-        </div>
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="https:\/\/pgray.github.io\//js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
-
-        <script src="https://pgray.github.io//js/main.js"></script>
-
-</script>
     </body>
+
 </html>
+
